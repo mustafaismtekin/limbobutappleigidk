@@ -1,0 +1,302 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification for Apples -- a platform where fans pitch product ideas to brands, vote them up, and preorder to trigger production.
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: companies
+    description: Brand/company operations
+  - name: ideas
+    description: Idea pitch, voting, and preorder operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /companies:
+    get:
+      operationId: listCompanies
+      tags: [companies]
+      summary: List companies
+      responses:
+        "200":
+          description: List of companies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Company"
+    post:
+      operationId: createCompany
+      tags: [companies]
+      summary: Create a company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompanyInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+
+  /companies/{id}:
+    get:
+      operationId: getCompany
+      tags: [companies]
+      summary: Get a company
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Company
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+        "404":
+          description: Not found
+
+  /ideas:
+    get:
+      operationId: listIdeas
+      tags: [ideas]
+      summary: List ideas
+      parameters:
+        - name: companyId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/IdeaStatus"
+      responses:
+        "200":
+          description: List of ideas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Idea"
+    post:
+      operationId: createIdea
+      tags: [ideas]
+      summary: Pitch a new idea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdeaInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Idea"
+
+  /ideas/{id}:
+    get:
+      operationId: getIdea
+      tags: [ideas]
+      summary: Get an idea
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Idea
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Idea"
+        "404":
+          description: Not found
+
+  /ideas/{id}/vote:
+    post:
+      operationId: voteIdea
+      tags: [ideas]
+      summary: Cast a vote for an idea
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated idea with new vote count and status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Idea"
+        "404":
+          description: Not found
+
+  /ideas/{id}/preorder:
+    post:
+      operationId: preorderIdea
+      tags: [ideas]
+      summary: Place a preorder for an idea (only allowed once idea reached preorder phase)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PreorderInput"
+      responses:
+        "200":
+          description: Updated idea with new preorder count and status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Idea"
+        "400":
+          description: Idea not in preorder phase
+        "404":
+          description: Not found
+
+  /ideas/summary:
+    get:
+      operationId: getIdeasSummary
+      tags: [ideas]
+      summary: Aggregate stats across the platform (total ideas, votes, preorders, ideas in production)
+      responses:
+        "200":
+          description: Summary stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IdeasSummary"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    IdeaStatus:
+      type: string
+      enum: [voting, preorder, producing]
+
+    Company:
+      type: object
+      required: [id, name, slug, description, logoUrl, createdAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+        description: { type: string }
+        logoUrl: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+
+    CompanyInput:
+      type: object
+      required: [name, slug, description]
+      properties:
+        name: { type: string, minLength: 1 }
+        slug: { type: string, minLength: 1 }
+        description: { type: string }
+        logoUrl: { type: string }
+
+    Idea:
+      type: object
+      required:
+        - id
+        - companyId
+        - title
+        - description
+        - imageUrl
+        - pdfUrl
+        - voteCount
+        - preorderCount
+        - voteThreshold
+        - preorderThreshold
+        - status
+        - createdAt
+      properties:
+        id: { type: integer }
+        companyId: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        imageUrl: { type: ["string", "null"] }
+        pdfUrl: { type: ["string", "null"] }
+        voteCount: { type: integer }
+        preorderCount: { type: integer }
+        voteThreshold: { type: integer }
+        preorderThreshold: { type: integer }
+        status:
+          $ref: "#/components/schemas/IdeaStatus"
+        createdAt: { type: string, format: date-time }
+
+    IdeaInput:
+      type: object
+      required: [companyId, title, description]
+      properties:
+        companyId: { type: integer }
+        title: { type: string, minLength: 1 }
+        description: { type: string, minLength: 1 }
+        imageUrl: { type: string }
+        pdfUrl: { type: string }
+        voteThreshold: { type: integer, minimum: 1 }
+        preorderThreshold: { type: integer, minimum: 1 }
+
+    PreorderInput:
+      type: object
+      required: [email]
+      properties:
+        email: { type: string, minLength: 3 }
+
+    IdeasSummary:
+      type: object
+      required: [totalIdeas, totalVotes, totalPreorders, ideasInProduction]
+      properties:
+        totalIdeas: { type: integer }
+        totalVotes: { type: integer }
+        totalPreorders: { type: integer }
+        ideasInProduction: { type: integer }
+

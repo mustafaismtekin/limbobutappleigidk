@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Apples"
+version = "1.0.0"
+id = "artifacts/fikirhane"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23765
+
+[services.development]
+run = "pnpm --filter @workspace/fikirhane run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/fikirhane", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/fikirhane/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23765"
+BASE_PATH = "/"
