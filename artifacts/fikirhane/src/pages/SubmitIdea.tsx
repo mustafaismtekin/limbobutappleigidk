@@ -33,6 +33,7 @@ export default function SubmitIdea() {
   const initialCompanyId = searchParams.get("companyId");
 
   const { data: companies, isLoading: isCompaniesLoading } = useListCompanies();
+  const companyList = Array.isArray(companies) ? companies : [];
   
   const form = useForm<z.infer<typeof submitSchema>>({
     resolver: zodResolver(submitSchema),
@@ -102,7 +103,7 @@ export default function SubmitIdea() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="brutal-border brutal-shadow">
-                        {companies?.map((c) => (
+                        {companyList.map((c) => (
                           <SelectItem key={c.id} value={c.id.toString()} className="font-mono">
                             {c.name}
                           </SelectItem>

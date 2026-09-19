@@ -9,9 +9,11 @@ export default function Home() {
   const { data: summary, isLoading: isSummaryLoading } = useGetIdeasSummary();
   const { data: ideas, isLoading: isIdeasLoading } = useListIdeas();
   const { data: companies } = useListCompanies();
+  const ideaList = Array.isArray(ideas) ? ideas : [];
+  const companyList = Array.isArray(companies) ? companies : [];
 
   const getCompanyName = (companyId: number) => {
-    return companies?.find((c) => c.id === companyId)?.name || `Brand #${companyId}`;
+    return companyList.find((c) => c.id === companyId)?.name || `Brand #${companyId}`;
   };
 
   return (
@@ -65,10 +67,10 @@ export default function Home() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {ideas?.map((idea) => (
+            {ideaList.map((idea) => (
               <IdeaCard key={idea.id} idea={idea} brandName={getCompanyName(idea.companyId)} />
             ))}
-            {ideas?.length === 0 && (
+            {ideaList.length === 0 && (
               <div className="col-span-full py-20 text-center font-mono text-muted-foreground uppercase">
                 No ideas pitched yet. Be the first.
               </div>

@@ -16,6 +16,7 @@ export default function BrandDetail() {
     { companyId },
     { query: { enabled: !!companyId, queryKey: getListIdeasQueryKey({ companyId }) } }
   );
+  const ideaList = Array.isArray(ideas) ? ideas : [];
 
   if (isCompanyLoading) return <div className="p-20 text-center font-mono uppercase font-bold animate-pulse">Loading Target...</div>;
   if (!company) return <div className="p-20 text-center font-mono uppercase font-bold text-destructive">Brand Not Found</div>;
@@ -56,10 +57,10 @@ export default function BrandDetail() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {ideas?.map((idea) => (
+            {ideaList.map((idea) => (
               <IdeaCard key={idea.id} idea={idea} brandName={company.name} />
             ))}
-            {ideas?.length === 0 && (
+            {ideaList.length === 0 && (
               <div className="col-span-full py-20 text-center border-2 border-dashed border-foreground p-12">
                 <p className="font-mono text-xl uppercase font-bold mb-4">No pitches yet.</p>
                 <Link href={`/submit?companyId=${company.id}`}>

@@ -6,6 +6,7 @@ import { Plus } from "lucide-react";
 
 export default function Brands() {
   const { data: companies, isLoading } = useListCompanies();
+  const companyList = Array.isArray(companies) ? companies : [];
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-16 min-h-screen">
@@ -31,7 +32,7 @@ export default function Brands() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {companies?.map((company, i) => (
+          {companyList.map((company, i) => (
             <Link key={company.id} href={`/brands/${company.id}`} className="block group">
               <Card className="h-full flex flex-col hover:bg-primary transition-all duration-300 animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${i * 50}ms` }}>
                 <CardHeader className="flex-1 group-hover:bg-primary group-hover:border-foreground transition-colors">
@@ -46,7 +47,7 @@ export default function Brands() {
               </Card>
             </Link>
           ))}
-          {companies?.length === 0 && (
+          {companyList.length === 0 && (
             <div className="col-span-full py-20 text-center font-mono text-muted-foreground uppercase">
               No brands listed yet. Be the first to add one.
             </div>
