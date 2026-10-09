@@ -22,6 +22,14 @@ export function Navbar() {
               Pitch Idea
             </Button>
           </Link>
+          <div className="flex items-center gap-2">
+            <span className="whitespace-nowrap border-2 border-foreground bg-card px-2.5 py-2 text-[10px] leading-none shadow-[2px_2px_0px_0px_hsl(var(--foreground))] sm:px-3 sm:text-xs">
+              Updates
+            </span>
+            <span className="whitespace-nowrap border-2 border-foreground bg-card px-2.5 py-2 text-[10px] leading-none shadow-[2px_2px_0px_0px_hsl(var(--foreground))] sm:px-3 sm:text-xs">
+              Notes
+            </span>
+          </div>
         </div>
       </div>
     </nav>
