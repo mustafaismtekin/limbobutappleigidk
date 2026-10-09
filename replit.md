@@ -22,7 +22,7 @@ A platform where fans pitch product ideas to brands, vote them up, and preorder 
 
 ## Where things live
 
-- Frontend: `artifacts/fikirhane` (React + Vite, served at `/`)
+- Frontend: `artifacts/consumerthing` (React + Vite, served at `/`)
 - API contract: `lib/api-spec/openapi.yaml`
 - DB schema: `lib/db/src/schema/{companies,ideas,preorders}.ts`
 - Routes: `artifacts/api-server/src/routes/{companies,ideas}.ts`

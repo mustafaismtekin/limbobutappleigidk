@@ -1,8 +1,8 @@
 {
   "framework": "vite",
   "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm --filter @workspace/fikirhane run build",
-  "outputDirectory": "artifacts/fikirhane/dist/public",
+  "buildCommand": "pnpm --filter @workspace/consumerthing run build",
+  "outputDirectory": "artifacts/consumerthing/dist/public",
   "rewrites": [
     {
       "source": "/(.*)",

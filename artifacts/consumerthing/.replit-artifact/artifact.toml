@@ -2,7 +2,7 @@ kind = "web"
 previewPath = "/"
 title = "Apples"
 version = "1.0.0"
-id = "artifacts/fikirhane"
+id = "artifacts/consumerthing"
 router = "path"
 
 [[services]]
@@ -11,12 +11,12 @@ paths = [ "/" ]
 localPort = 23765
 
 [services.development]
-run = "pnpm --filter @workspace/fikirhane run dev"
+run = "pnpm --filter @workspace/consumerthing run dev"
 
 [services.production]
-build = [ "pnpm", "--filter", "@workspace/fikirhane", "run", "build" ]
+build = [ "pnpm", "--filter", "@workspace/consumerthing", "run", "build" ]
 serve = "static"
-publicDir = "artifacts/fikirhane/dist/public"
+publicDir = "artifacts/consumerthing/dist/public"
 
 [[services.production.rewrites]]
 from = "/*"
